@@ -8,7 +8,8 @@ class SpudderSpec extends Specification {
 		when:
 			Range posRange = 0..<25
 			Range collRange = 0..<2
-			Spudder spudder = new Spudder(
+			Spudder spudder = new Spudder( 
+									"testSpudd.SPUDD",
 									[	"apos1":posRange.collect{it-> "$it"},
 										"apos2":posRange.collect{it-> "$it"},
 										"wpos":posRange.collect{it-> "$it"}
@@ -17,20 +18,37 @@ class SpudderSpec extends Specification {
 										"coll":collRange.collect{it-> "$it"}
 									]
 								)
-		then: 
-			spudder.init()
-					.givenState("apos1")
-					.givenState("apos2")
-					.givenState("wpos")
-					.valueIs { args ->
-						
-						if(args.apos1 == args.apos2 && args.apos2== args.wpos)
-							return 0.0f
-						else {
-							double val = 25.0 * 25.0 * 25.0
-							return String.format("%.20f",1.0f/(25.0 * 25.0 * 25.0))
-						}
+			spudder.variables()
+			spudder.observations()
+			spudder.initBelief()
+					.withVariable("apos1")
+					.withVariable("apos2")
+					.withVariable("wpos")
+					.hasValue { args ->
+						return String.format("%.20f",1.0f/(25.0 * 25.0 * 25.0))
 					}
+					
+			/*spudder.dd("wumpusb")
+					.withVariable("apos1")
+					.withVariable("wpos")
+					.then()
+					.withVariable("wpos")
+					.hasValue { args ->
+						return String.format("%.20f",1.0f/(25.0 * 25.0 * 25.0))
+					}
+			
+			spudder.dd("ldd")
+					.then()
+					.withVariable("apos1")
+					.withObservation("aloc")
+					.hasValue {args ->
+						if(args["apos1'"] == args["aloc'"])
+							return 1.0f
+						else
+							return 0.0f
+					}*/
+		then: 
+			true
 			
 	}
 }

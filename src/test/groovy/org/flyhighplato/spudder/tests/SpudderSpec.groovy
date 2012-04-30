@@ -131,6 +131,23 @@ class SpudderSpec extends Specification {
 					.withObsTransition("coll", "sensingdd")
 					.hasCost(1)
 					
+			spudder.reward(
+				
+					spudder.rewardTree()
+							.withVariable("apos1")
+							.withVariable("apos2")
+							.withVariable("wpos")
+							.hasValue { args ->
+								if(args["apos1"] == args["wpos"])
+									return 10.0f
+								else
+									return 0.0f
+							}
+				)
+			
+			spudder.discount(0.95f)
+			spudder.tolerance(0.0000001)
+					
 		then: 
 			true
 			

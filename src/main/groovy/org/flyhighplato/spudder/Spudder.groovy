@@ -44,12 +44,21 @@ class Spudder {
 		writeLine(output)
 	}
 	
-	public SpudderAction action(String actionName) {
-		return new SpudderAction(this,actionName)
+	public SpuddAction action(String actionName) {
+		return new SpuddAction(this,actionName)
+	}
+	
+	public SpuddReward reward(SpuddRewardTree t) {
+		return new SpuddReward(this, t)
+		
 	}
 	
 	public SpuddActionTree actionTree() {
 		return new SpuddActionTree(this,[""],[""])
+	}
+	
+	public SpuddRewardTree rewardTree() {
+		return new SpuddRewardTree(this,[""],[""])
 	}
 	
 	public SpuddTree initBelief() {
@@ -59,6 +68,15 @@ class Spudder {
 	public SpuddTree dd(String ddName) {
 		return new SpuddDDTree(this,[""],["$ddName"])
 	}
+	
+	public void discount(double discAmt) {
+		writeLine("discount " + String.format("%.20f",discAmt))
+	}
+	
+	public void tolerance(double tolAmt) {
+		writeLine("tolerance " + String.format("%.20f",tolAmt))
+	}
+	
 	public void writeLine(String s) {
 			writer.writeLine(s);
 			writer.flush()

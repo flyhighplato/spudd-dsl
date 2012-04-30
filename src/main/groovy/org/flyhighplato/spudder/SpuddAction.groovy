@@ -1,22 +1,22 @@
 package org.flyhighplato.spudder
 
-class SpudderAction {
+class SpuddAction {
 	String name
 	Map<String,SpuddActionTree> anonymousVarDD = [:], anonymousObsDD = [:]
 	Map<String,String> namedVarDD = [:], namedObsDD = [:]
 	double cost = 0.0f
 	Spudder spudder
-	public SpudderAction(Spudder spudder, String actionName) {
+	public SpuddAction(Spudder spudder, String actionName) {
 		name = actionName
 		this.spudder = spudder
 	}
 	
-	private SpudderAction()
+	private SpuddAction()
 	{
 		
 	}
 	
-	private copy(SpudderAction otherAction) {
+	private copy(SpuddAction otherAction) {
 		spudder = otherAction.spudder
 		name = otherAction.name
 		anonymousVarDD = otherAction.anonymousVarDD
@@ -25,32 +25,32 @@ class SpudderAction {
 		namedObsDD = otherAction.namedObsDD
 	}
 	
-	public SpudderAction withVariableTransition(String varName, SpuddActionTree t) {
+	public SpuddAction withVariableTransition(String varName, SpuddActionTree t) {
 		assert t
-		SpudderAction act = new SpudderAction()
+		SpuddAction act = new SpuddAction()
 		act.copy(this)
 		act.anonymousVarDD[varName] = t
 		return act
 	}
 	
-	public SpudderAction withVariableTransition(String varName, String ddName) {
-		SpudderAction act = new SpudderAction()
+	public SpuddAction withVariableTransition(String varName, String ddName) {
+		SpuddAction act = new SpuddAction()
 		act.copy(this)
 		act.namedVarDD[varName] = ddName
 		return act
 	}
 	
-	public SpudderAction withObsTransition(String varName, SpuddActionTree t) {
+	public SpuddAction withObsTransition(String varName, SpuddActionTree t) {
 		assert t
 		
-		SpudderAction act = new SpudderAction()
+		SpuddAction act = new SpuddAction()
 		act.copy(this)
 		act.anonymousObsDD[varName] = t
 		return act
 	}
 	
-	public SpudderAction withObsTransition(String varName, String ddName) {
-		SpudderAction act = new SpudderAction()
+	public SpuddAction withObsTransition(String varName, String ddName) {
+		SpuddAction act = new SpuddAction()
 		act.copy(this)
 		act.namedObsDD[varName] = ddName
 		return act

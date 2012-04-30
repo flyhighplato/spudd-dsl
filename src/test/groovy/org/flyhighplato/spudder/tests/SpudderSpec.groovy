@@ -6,7 +6,10 @@ import spock.lang.Specification
 class SpudderSpec extends Specification {
 	def "generate SPUDD file"() {
 		when:
-			Range posRange = 0..<25
+			int width = 5
+			int height = 5
+			double totalStates = Math.pow((double)width*(double)height,3.0f)
+			Range posRange = 0..<(width*height)
 			Range collRange = 0..<2
 			Spudder spudder = new Spudder( 
 									"testSpudd.SPUDD",
@@ -25,7 +28,7 @@ class SpudderSpec extends Specification {
 					.withVariable("apos2")
 					.withVariable("wpos")
 					.hasValue { args ->
-						return String.format("%.20f",1.0f/(25.0 * 25.0 * 25.0))
+						return String.format("%.20f",1.0f/totalStates)
 					}
 					
 			spudder.dd("wumpusb")
@@ -84,13 +87,13 @@ class SpudderSpec extends Specification {
 									int oldPos = Integer.parseInt(args["apos1"])
 									int newPos = Integer.parseInt(args["apos1'"])
 									
-									int oldPosY = oldPos/5
-									int oldPosX = oldPos%5
-									int newPosY = newPos/5
-									int newPosX = newPos%5
+									int oldPosY = oldPos/width
+									int oldPosX = oldPos%width
+									int newPosY = newPos/width
+									int newPosX = newPos%width
 									
 									if(oldPosX==newPosX) {
-										if(oldPosY<4) {
+										if(oldPosY<height-1) {
 											if(oldPosY+1==newPosY)
 												return 1.0f
 											else
@@ -125,14 +128,243 @@ class SpudderSpec extends Specification {
 										return "0.0"
 									}
 								}
-						)
+					)
 					.withVariableTransition("wpos", "wumpusb")
 					.withObsTransition("aloc", "ldd")
 					.withObsTransition("coll", "sensingdd")
 					.hasCost(1)
 					
+			spudder.action("east")
+					.withVariableTransition("apos1",
+						spudder.actionTree()
+								.withVariable("apos1")
+								.then()
+								.withVariable("apos1")
+								.hasValue { args ->
+									int oldPos = Integer.parseInt(args["apos1"])
+									int newPos = Integer.parseInt(args["apos1'"])
+									
+									int oldPosY = oldPos/width
+									int oldPosX = oldPos%width
+									int newPosY = newPos/width
+									int newPosX = newPos%width
+									
+									if(oldPosY==newPosY) {
+										if(oldPosX>0) {
+											if(oldPosX-1==newPosX)
+												return 1.0f
+											else
+												return 0.0f
+										}
+										else {
+											if(oldPosX==newPosX)
+												return 1.0f
+											else
+												return 0.0f
+										}
+									}
+									else
+									{
+										return 0.0f
+									}
+									
+								}
+					)
+					.withVariableTransition("apos2",
+						spudder.actionTree()
+								.withVariable("apos2")
+								.then()
+								.withVariable("apos2")
+								.hasValue { args ->
+									if(distance(Integer.parseInt(args["apos2"]),Integer.parseInt(args["apos2'"]))<=1)
+									{
+										return String.format("%.20f",1.0f/(double)numAdjacent(Integer.parseInt(args["apos2"])))
+									}
+									else
+									{
+										return "0.0"
+									}
+								}
+					)
+					.withVariableTransition("wpos", "wumpusb")
+					.withObsTransition("aloc", "ldd")
+					.withObsTransition("coll", "sensingdd")
+					.hasCost(1)
+					
+					spudder.action("south")
+					.withVariableTransition("apos1",
+						spudder.actionTree()
+								.withVariable("apos1")
+								.then()
+								.withVariable("apos1")
+								.hasValue { args ->
+									int oldPos = Integer.parseInt(args["apos1"])
+									int newPos = Integer.parseInt(args["apos1'"])
+									
+									int oldPosY = oldPos/width
+									int oldPosX = oldPos%width
+									int newPosY = newPos/width
+									int newPosX = newPos%width
+									
+									if(oldPosX==newPosX) {
+										if(oldPosY>0) {
+											if(oldPosY-1==newPosY)
+												return 1.0f
+											else
+												return 0.0f
+										}
+										else {
+											if(oldPosY==newPosY)
+												return 1.0f
+											else
+												return 0.0f
+										}
+									}
+									else
+									{
+										return 0.0f
+									}
+									
+								}
+					)
+					.withVariableTransition("apos2",
+						spudder.actionTree()
+								.withVariable("apos2")
+								.then()
+								.withVariable("apos2")
+								.hasValue { args ->
+									if(distance(Integer.parseInt(args["apos2"]),Integer.parseInt(args["apos2'"]))<=1)
+									{
+										return String.format("%.20f",1.0f/(double)numAdjacent(Integer.parseInt(args["apos2"])))
+									}
+									else
+									{
+										return "0.0"
+									}
+								}
+					)
+					.withVariableTransition("wpos", "wumpusb")
+					.withObsTransition("aloc", "ldd")
+					.withObsTransition("coll", "sensingdd")
+					.hasCost(1)
+					
+			spudder.action("east")
+					.withVariableTransition("apos1",
+						spudder.actionTree()
+								.withVariable("apos1")
+								.then()
+								.withVariable("apos1")
+								.hasValue { args ->
+									int oldPos = Integer.parseInt(args["apos1"])
+									int newPos = Integer.parseInt(args["apos1'"])
+									
+									int oldPosY = oldPos/width
+									int oldPosX = oldPos%width
+									int newPosY = newPos/width
+									int newPosX = newPos%width
+									
+									if(oldPosY==newPosY) {
+										if(oldPosX<width-1) {
+											if(oldPosX+1==newPosX)
+												return 1.0f
+											else
+												return 0.0f
+										}
+										else {
+											if(oldPosX==newPosX)
+												return 1.0f
+											else
+												return 0.0f
+										}
+									}
+									else
+									{
+										return 0.0f
+									}
+									
+								}
+					)
+					.withVariableTransition("apos2",
+						spudder.actionTree()
+								.withVariable("apos2")
+								.then()
+								.withVariable("apos2")
+								.hasValue { args ->
+									if(distance(Integer.parseInt(args["apos2"]),Integer.parseInt(args["apos2'"]))<=1)
+									{
+										return String.format("%.20f",1.0f/(double)numAdjacent(Integer.parseInt(args["apos2"])))
+									}
+									else
+									{
+										return "0.0"
+									}
+								}
+					)
+					.withVariableTransition("wpos", "wumpusb")
+					.withObsTransition("aloc", "ldd")
+					.withObsTransition("coll", "sensingdd")
+					.hasCost(1)
+					
+			spudder.action("west")
+					.withVariableTransition("apos1",
+						spudder.actionTree()
+								.withVariable("apos1")
+								.then()
+								.withVariable("apos1")
+								.hasValue { args ->
+									int oldPos = Integer.parseInt(args["apos1"])
+									int newPos = Integer.parseInt(args["apos1'"])
+									
+									int oldPosY = oldPos/width
+									int oldPosX = oldPos%width
+									int newPosY = newPos/width
+									int newPosX = newPos%width
+									
+									if(oldPosY==newPosY) {
+										if(oldPosX>0) {
+											if(oldPosX-1==newPosX)
+												return 1.0f
+											else
+												return 0.0f
+										}
+										else {
+											if(oldPosX==newPosX)
+												return 1.0f
+											else
+												return 0.0f
+										}
+									}
+									else
+									{
+										return 0.0f
+									}
+									
+								}
+					)
+					.withVariableTransition("apos2",
+						spudder.actionTree()
+								.withVariable("apos2")
+								.then()
+								.withVariable("apos2")
+								.hasValue { args ->
+									if(distance(Integer.parseInt(args["apos2"]),Integer.parseInt(args["apos2'"]))<=1)
+									{
+										return String.format("%.20f",1.0f/(double)numAdjacent(Integer.parseInt(args["apos2"])))
+									}
+									else
+									{
+										return "0.0"
+									}
+								}
+					)
+					.withVariableTransition("wpos", "wumpusb")
+					.withObsTransition("aloc", "ldd")
+					.withObsTransition("coll", "sensingdd")
+					.hasCost(1)
+					
+			
+					
 			spudder.reward(
-				
 					spudder.rewardTree()
 							.withVariable("apos1")
 							.withVariable("apos2")

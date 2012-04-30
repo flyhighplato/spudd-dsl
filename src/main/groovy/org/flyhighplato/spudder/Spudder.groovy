@@ -44,6 +44,13 @@ class Spudder {
 		writeLine(output)
 	}
 	
+	public SpudderAction action(String actionName) {
+		return new SpudderAction(this,actionName)
+	}
+	
+	public SpuddActionTree actionTree() {
+		return new SpuddActionTree(this,[""],[""])
+	}
 	
 	public SpuddTree initBelief() {
 		return new SpuddTree(this,[""],["init"])
@@ -55,6 +62,11 @@ class Spudder {
 	public void writeLine(String s) {
 			writer.writeLine(s);
 			writer.flush()
+	}
+	
+	public void write(String s) {
+		writer.write(s);
+		writer.flush()
 	}
 	
 	protected getVarName(String type, def ordinal) {

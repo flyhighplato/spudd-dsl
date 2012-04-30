@@ -1,5 +1,7 @@
 package org.flyhighplato.spudder
 
+import java.util.List;
+
 public class SpuddTree {
 	protected List levels = []
 	protected List levelNames = []
@@ -15,25 +17,29 @@ public class SpuddTree {
 		this.isNext = isNext
 	}
 	
+	protected SpuddTree newInstance(Spudder spudder, List levelNames, List levels, SpuddTree parent = null, boolean isNext = false) {
+		return new SpuddTree(spudder, levelNames, levels, parent, isNext)
+	}
+
 	public SpuddTree withVariable(String stateName) {
 		List variables = spudder.variables[stateName]
 		if(isNext)
 			stateName = stateName+"'"
-		return new SpuddTree(spudder, levelNames + [stateName], levels + [variables], this, isNext)
+		return newInstance(spudder, levelNames + [stateName], levels + [variables], this, isNext)
 	}
 	
 	public SpuddTree withObservation(String obsName) {
 		List observations = spudder.observations[obsName]
 		if(isNext)
 			obsName = obsName+"'"
-		return new SpuddTree(spudder, levelNames + [obsName], levels + [observations], this, isNext)
+		return newInstance(spudder, levelNames + [obsName], levels + [observations], this, isNext)
 	}
 	
 	public SpuddTree then() {
 		if(isNext)
 			throw new Exception("This tree is already in next mode")
 	
-		return new SpuddTree(spudder, levelNames, levels, this, true)
+		return newInstance(spudder, levelNames, levels, this, true)
 	}
 	
 	public boolean isNext() {

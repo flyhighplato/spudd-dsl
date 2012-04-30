@@ -12,49 +12,90 @@ class SpudderUtil {
 		assert (levels.size()) > currentLevelIx
 		assert levels[currentLevelIx]
 		
-		
-		String output = ""
-		
 		Iterable currentLevel = levels[currentLevelIx]
 		String levelName = levelNames[currentLevelIx]
 		
-		currentLevel.each{ parameter ->
-			currentLevelIx.times{ output+=INDENT }
+		String output =""
+		
+		
+		
+		if(levelNames[currentLevelIx]) {
+			if(currentLevelIx!=0) {
+				output+=baseIndent
+			}
+			
+			output+="($levelName \r\n"
+		}
+			
+		currentLevel.eachWithIndex{ parameter, ix ->
+			
 			
 			if(levels.size() - 1 > currentLevelIx) {
-				
-				output +="("
-					if(levelName!=""){
-						if(levelName[-1]=="'") {
-							output += " $levelName (${levelName[0..-2]}_${parameter} \r\n"
-						}
-						else
-							output += " $levelName (${levelName}_${parameter} \r\n"
+
+				(levelName.length() + 2).times{ output+=" "}
+				output+=baseIndent
+
+				if(levelName!=""){
+					if(!levelNames[currentLevelIx+1]) {
+						(levelName.length() + 2).times{ output+=" "}
+					}
+					
+					if(levelName[-1]=="'") {
+						
+						output += "(${levelName[0..-2]}_${parameter}"
 					}
 					else
-						output += "($parameter \r\n"
-					
-					output += baseIndent
-					currentLevelIx.times{ output+=INDENT }
-					
-					Map newValueAccumulator = [:]
-					newValueAccumulator.putAll(valueAccumulator)
-					newValueAccumulator[levelName] = parameter
-					
-					output += makeSubTree(levelNames,levels,newValueAccumulator,currentLevelIx + 1,baseIndent)
+						output += "(${levelName}_${parameter}"
+						
+					if(levelNames[currentLevelIx+1])
+					{
+						output+="\r\n"
+					}
+				}
+				else {
+					output += "($parameter "
+				}
 				
-				currentLevelIx.times{ output+=INDENT }
-					
-				output += ") "
+				if(levelNames[currentLevelIx+1]) {
+					output += baseIndent
+				}
+				
+				Map newValueAccumulator = [:]
+				newValueAccumulator.putAll(valueAccumulator)
+				newValueAccumulator[levelName] = parameter
+				
+				String newBaseIndent = baseIndent
+				levelName.length().times{newBaseIndent+=" "}
+				output += makeSubTree(levelNames,levels,newValueAccumulator,currentLevelIx + 1,newBaseIndent)
+				
+				if(levelNames[currentLevelIx+1]) {
+					currentLevelIx.times{ output+=INDENT }
+					output+=baseIndent
+				}
+				output += ") \r\n"
+				
 			}
 			else {
 				if(parameter instanceof Closure) {
-					output += "( " + parameter(valueAccumulator)
+					//currentLevelIx.times{ output+=INDENT }
+					//output+=baseIndent
+					output += " (" + parameter(valueAccumulator) + ")"
 				}
 			}
-			output += ")\r\n"
-			output += baseIndent
 			
+			
+		}
+		
+		if(levelNames[currentLevelIx]) {
+			currentLevelIx.times{ output+=INDENT }
+			output+=baseIndent
+
+			output+=")\r\n"
+			
+		}
+		
+		if(levelName) {
+			levelName.length().times{output+=" "}
 		}
 		
 		return output
